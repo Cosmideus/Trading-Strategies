@@ -1,0 +1,19 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Cosmideus
+//@version=4
+
+strategy(title="SMA Crossover", overlay=true)
+source = input(defval=close, type=input.source, title="Source")
+fastLength = input(title="Fast Length", type=input.integer,defval=50, minval=2, maxval=500)
+slowLength = input(title="Slow Length", type=input.integer,defval=200, minval=5, maxval=1000)
+fastSMA = sma(source, fastLength)
+slowSMA = sma(source, slowLength)
+plot(fastSMA, color = #76ff03, linewidth = 1)
+plot(slowSMA, color = #f44336, linewidth = 2)
+longCondition = source >= slowSMA and (crossover(fastSMA, slowSMA) or crossover(source, fastSMA))
+if (longCondition)
+    strategy.entry("Long", strategy.long)
+
+shortCondition = source > slowSMA and (crossunder(source, fastSMA) or crossunder(fastSMA, slowSMA))
+if (shortCondition)
+    strategy.entry("Short", strategy.short)

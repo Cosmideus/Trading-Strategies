@@ -1,0 +1,19 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Cosmideus
+//@version=4
+
+strategy(title="EMA Crossover", overlay=true)
+source = input(defval=close, type=input.source, title="Source")
+fastLength = input(title="Fast Length", type=input.integer,defval=50, minval=2, maxval=500)
+slowLength = input(title="Slow Length", type=input.integer,defval=200, minval=5, maxval=1000)
+fastEMA = ema(source, fastLength)
+slowEMA = ema(source, slowLength)
+plot(fastEMA, color = #76ff03, linewidth = 1)
+plot(slowEMA, color = #f44336, linewidth = 2)
+longCondition = source >= slowEMA and (crossover(fastEMA, slowEMA) or crossover(source, fastEMA))
+if (longCondition)
+    strategy.entry("Long", strategy.long)
+
+shortCondition = source > slowEMA and (crossunder(source, fastEMA) or crossunder(fastEMA, slowEMA))
+if (shortCondition)
+    strategy.entry("Short", strategy.short)
